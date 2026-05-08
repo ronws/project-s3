@@ -18,9 +18,9 @@ export function corsMiddleware(allowedOrigins = ['*']) {
         return callback(null, true);
       }
 
-      // Allow all origins if wildcard is present
+      // If wildcard is present, reflect the request origin (for credentials support)
       if (allowedOrigins.includes('*')) {
-        return callback(null, true);
+        return callback(null, origin);  // Reflect the request origin instead of '*'
       }
 
       // Check if origin is in allowed list
