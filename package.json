@@ -7,8 +7,8 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
-    "stop": "./stop.sh",
-    "clean": "rm -rf **/node_modules **/.env"
+    "clean": "rm -rf backend/node_modules frontend/node_modules backend/.env frontend/.env",
+    "install:all": "npm install && (cd backend && npm install) && (cd frontend && npm install)"
   },
   "keywords": [
     "gemini",
