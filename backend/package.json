@@ -1,0 +1,32 @@
+{
+  "name": "gemini-flash-api",
+  "version": "1.0.0",
+  "description": "Production-ready Express.js REST API for Google Gemini 2.5 Flash with modular architecture, comprehensive error handling, and health checks",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "NODE_ENV=development node --watch src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "echo \"Linting not yet configured\"",
+    "format": "echo \"Formatting not yet configured\""
+  },
+  "keywords": [
+    "gemini",
+    "express",
+    "rest-api",
+    "ai"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^1.52.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "multer": "^2.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

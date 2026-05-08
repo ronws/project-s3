@@ -1,0 +1,15 @@
+{
+  "name": "gemini-flash-ui",
+  "version": "1.0.0",
+  "description": "Web UI for Gemini Flash API - Vanilla JS frontend",
+  "scripts": {
+    "dev": "serve -s . -l 8080",
+    "start": "serve -s . -l 8080"
+  },
+  "keywords": ["gemini", "ai", "vanilla-js", "web-ui"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

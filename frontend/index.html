@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Flash API - Web UI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Gemini Flash API</h1>
+      <p class="subtitle">Web Interface for Google Gemini 2.5 Flash</p>
+    </header>
+
+    <main>
+      <!-- Connection Status -->
+      <div id="status" class="status connected">
+        <span class="status-dot"></span>
+        <span class="status-text">Checking backend...</span>
+      </div>
+
+      <!-- API Configuration -->
+      <section class="config-section">
+        <h2>⚙️ Configuration</h2>
+        <div class="config-grid">
+          <div class="form-group">
+            <label for="apiUrl">Backend API URL</label>
+            <input type="text" id="apiUrl" value="http://localhost:4443" placeholder="http://localhost:4443">
+          </div>
+          <div class="form-group">
+            <label for="temperature">Temperature (0-2)</label>
+            <input type="number" id="temperature" value="1.0" min="0" max="2" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="maxTokens">Max Tokens</label>
+            <input type="number" id="maxTokens" value="8192" min="1" max="8192">
+          </div>
+        </div>
+      </section>
+
+      <!-- Text Generation -->
+      <section class="endpoint-section">
+        <h2>💬 Text Generation</h2>
+        <div class="form-group">
+          <label for="textPrompt">Prompt</label>
+          <textarea id="textPrompt" rows="4" placeholder="Enter your prompt here..."></textarea>
+        </div>
+        <button id="sendTextBtn" class="btn btn-primary">Send to Gemini</button>
+        <div id="textResponse" class="response-box hidden"></div>
+      </section>
+
+      <!-- Chat -->
+      <section class="endpoint-section">
+        <h2>💭 Chat</h2>
+        <div id="chatHistory" class="chat-history"></div>
+        <div class="form-group">
+          <label for="chatMessage">Message</label>
+          <textarea id="chatMessage" rows="2" placeholder="Type your message..."></textarea>
+        </div>
+        <button id="sendChatBtn" class="btn btn-primary">Send Message</button>
+        <div id="chatResponse" class="response-box hidden"></div>
+      </section>
+
+      <!-- Image Analysis -->
+      <section class="endpoint-section">
+        <h2>🖼️ Image Analysis</h2>
+        <div class="form-group">
+          <label for="imageFile">Upload Image</label>
+          <input type="file" id="imageFile" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label for="imagePrompt">Prompt</label>
+          <textarea id="imagePrompt" rows="2" placeholder="Describe what to analyze..."></textarea>
+        </div>
+        <button id="sendImageBtn" class="btn btn-primary">Analyze Image</button>
+        <div id="imageResponse" class="response-box hidden"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Gemini Flash API v1.0.0 | Backend: <span id="backendVersion">Unknown</span></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

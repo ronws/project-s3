@@ -1,0 +1,29 @@
+{
+  "name": "project-s3",
+  "version": "1.0.0",
+  "description": "Gemini Flash API & Web UI - Full stack application with Express backend and vanilla JS frontend",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue.bgWhite,green.bgWhite \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
+    "stop": "./stop.sh",
+    "clean": "rm -rf **/node_modules **/.env"
+  },
+  "keywords": [
+    "gemini",
+    "ai",
+    "express",
+    "api",
+    "vanilla-js",
+    "fullstack"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
