@@ -91,13 +91,34 @@ export default function ChatPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        const status = response.status;
+        let errorMsg = '';
+        let errorCode = '';
+        
+        if (status === 429) {
+          errorMsg = 'Rate limit exceeded. Please wait a moment and try again.';
+          errorCode = 'RATE_LIMIT_EXCEEDED';
+        } else if (status === 500) {
+          errorMsg = 'Internal server error. Please try again later.';
+          errorCode = 'INTERNAL_SERVER_ERROR';
+        } else if (status === 503) {
+          errorMsg = 'Service unavailable. Please try again later.';
+          errorCode = 'SERVICE_UNAVAILABLE';
+        } else if (status === 404) {
+          errorMsg = 'Resource not found.';
+          errorCode = 'NOT_FOUND';
+        } else {
+          errorMsg = `API error: ${status}`;
+          errorCode = 'UNKNOWN_ERROR';
+        }
+        throw new Error(errorMsg);
       }
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let fullText = '';
       let usageMetadata = null;
+      let streamError = null;
 
       if (reader) {
         while (true) {
@@ -113,7 +134,12 @@ export default function ChatPage() {
                 const data = JSON.parse(line.slice(6));
                 
                 if (data.error) {
-                  throw new Error(data.error);
+                  streamError = {
+                    message: data.error,
+                    errorCode: data.errorCode || 'UNKNOWN_ERROR',
+                    statusCode: data.statusCode || 500,
+                  };
+                  break;
                 }
                 
                 if (data.text) {
@@ -129,7 +155,25 @@ export default function ChatPage() {
               }
             }
           }
+          if (streamError) break;
         }
+      }
+
+      // Handle streaming errors
+      if (streamError) {
+        let errorDisplay = streamError.message;
+        
+        if (streamError.errorCode === 'RATE_LIMIT_EXCEEDED' || streamError.statusCode === 429) {
+          errorDisplay = 'Rate limit exceeded. Please wait a moment and try again.';
+        } else if (streamError.errorCode === 'SERVICE_UNAVAILABLE' || streamError.statusCode === 503) {
+          errorDisplay = 'Service unavailable. Please try again later.';
+        } else if (streamError.errorCode === 'NOT_FOUND' || streamError.statusCode === 404) {
+          errorDisplay = 'Resource not found.';
+        } else if (streamError.errorCode === 'INTERNAL_SERVER_ERROR' || streamError.statusCode === 500) {
+          errorDisplay = 'Internal server error. Please try again later.';
+        }
+        
+        throw new Error(errorDisplay);
       }
 
       const responseTime = Date.now() - startTime;
@@ -155,15 +199,39 @@ export default function ChatPage() {
 
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(`Error: ${errorMsg}`);
-      console.error(err);
+      
+      // Determine error type and display appropriate message
+      let displayError = errorMsg;
+      let userMessage = errorMsg;
+      
+      const lowerError = errorMsg.toLowerCase();
+      if (lowerError.includes('rate limit') || lowerError.includes('429') || lowerError.includes('resource exhausted') || lowerError.includes('quota')) {
+        displayError = 'Rate Limit Error';
+        userMessage = 'API rate limit exceeded. Please wait a moment and try again.';
+      } else if (lowerError.includes('500') || lowerError.includes('internal server')) {
+        displayError = 'Server Error';
+        userMessage = 'Internal server error. Please try again later.';
+      } else if (lowerError.includes('503') || lowerError.includes('unavailable') || lowerError.includes('service')) {
+        displayError = 'Service Unavailable';
+        userMessage = 'Service is temporarily unavailable. Please try again later.';
+      } else if (lowerError.includes('404') || lowerError.includes('not found')) {
+        displayError = 'Not Found';
+        userMessage = 'The requested resource was not found.';
+      } else if (lowerError.includes('network') || lowerError.includes('fetch') || lowerError.includes('connection')) {
+        displayError = 'Connection Error';
+        userMessage = 'Unable to connect to the server. Please check your connection.';
+      }
+      
+      setError(`${displayError}: ${userMessage}`);
+      console.error('Chat error:', err);
       setIsStreaming(false);
       const errorMessage: Message = {
         role: 'assistant',
-        content: `Sorry, there was an error: ${errorMsg}. Please try again.`,
+        content: `Sorry, I encountered an error: ${userMessage}`,
         timestamp: new Date().toISOString(),
       };
       addMessage(errorMessage);
+      showToast(userMessage, 'error');
     } finally {
       setIsLoading(false);
     }
@@ -213,7 +281,19 @@ export default function ChatPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        const status = response.status;
+        let errorMsg = '';
+        
+        if (status === 429) {
+          errorMsg = 'Rate limit exceeded. Please wait and try again.';
+        } else if (status === 500 || status === 503) {
+          errorMsg = 'Server error. Please try again later.';
+        } else if (status === 404) {
+          errorMsg = 'Resource not found.';
+        } else {
+          errorMsg = `API error: ${status}`;
+        }
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
@@ -238,7 +318,21 @@ export default function ChatPage() {
       showToast('Response regenerated', 'success');
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      showToast(`Error: ${errorMsg}`, 'error');
+      
+      // Determine error type
+      let displayMsg = errorMsg;
+      const lowerError = errorMsg.toLowerCase();
+      if (lowerError.includes('rate limit') || lowerError.includes('429') || lowerError.includes('resource exhausted')) {
+        displayMsg = 'Rate limit exceeded. Please wait and try again.';
+      } else if (lowerError.includes('500') || lowerError.includes('503') || lowerError.includes('server')) {
+        displayMsg = 'Server error. Please try again later.';
+      } else if (lowerError.includes('404') || lowerError.includes('not found')) {
+        displayMsg = 'Resource not found.';
+      } else if (lowerError.includes('network') || lowerError.includes('connection')) {
+        displayMsg = 'Connection error. Please check your network.';
+      }
+      
+      showToast(displayMsg, 'error');
     } finally {
       setIsLoading(false);
     }

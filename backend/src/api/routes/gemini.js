@@ -11,10 +11,90 @@ import {
   ValidationException,
   InternalServerException,
   ServiceUnavailableException,
+  RateLimitException,
+  NotFoundException,
 } from '../core/exceptions.js';
 import { config } from '../../config/core.js';
 
 const router = Router();
+
+/**
+ * Parse and classify Gemini API errors
+ * Returns appropriate exception based on error type
+ */
+function handleGeminiError(error) {
+  const errorMessage = error.message || '';
+  const errorStr = errorMessage.toLowerCase();
+
+  // Resource exhausted / Rate limit (429)
+  if (
+    errorStr.includes('resource exhausted') ||
+    errorStr.includes('rate limit') ||
+    errorStr.includes('quota') ||
+    errorStr.includes('429') ||
+    errorStr.includes('too many requests')
+  ) {
+    return new RateLimitException(
+      'API rate limit exceeded. Please wait a moment and try again.',
+      { originalError: errorMessage }
+    );
+  }
+
+  // Internal server error (500)
+  if (
+    errorStr.includes('internal server error') ||
+    errorStr.includes('500') ||
+    errorStr.includes('server error') ||
+    errorStr.includes('service unavailable')
+  ) {
+    return new ServiceUnavailableException(
+      'Gemini service is temporarily unavailable. Please try again later.',
+      { originalError: errorMessage }
+    );
+  }
+
+  // Not found (404)
+  if (
+    errorStr.includes('not found') ||
+    errorStr.includes('404') ||
+    errorStr.includes('model not found')
+  ) {
+    return new NotFoundException(
+      'The requested model or resource was not found.',
+      { originalError: errorMessage }
+    );
+  }
+
+  // Permission denied
+  if (
+    errorStr.includes('permission') ||
+    errorStr.includes('forbidden') ||
+    errorStr.includes('403')
+  ) {
+    return new BadRequestException(
+      'Permission denied. Please check your API key and permissions.',
+      { originalError: errorMessage }
+    );
+  }
+
+  // Invalid request
+  if (
+    errorStr.includes('invalid') ||
+    errorStr.includes('bad request') ||
+    errorStr.includes('400')
+  ) {
+    return new ValidationException(
+      'Invalid request. Please check your input.',
+      { originalError: errorMessage }
+    );
+  }
+
+  // Default to internal server error
+  return new InternalServerException(
+    `An error occurred: ${errorMessage}`,
+    { originalError: errorMessage }
+  );
+}
 
 // Initialize Google GenAI client
 const ai = new GoogleGenAI({ apiKey: config.geminiApiKey });
@@ -289,9 +369,15 @@ router.post('/stream-chat', async (req, res, next) => {
     
     res.end();
   } catch (err) {
-    res.write(`data: ${JSON.stringify({ error: err.message, done: true })}\n\n`);
+    const parsedError = handleGeminiError(err);
+    res.write(`data: ${JSON.stringify({ 
+      error: parsedError.message, 
+      errorCode: parsedError.errorCode,
+      statusCode: parsedError.statusCode,
+      done: true 
+    })}\n\n`);
     res.end();
-    next(err);
+    // Don't call next() here since we've already sent the response
   }
 });
 
