@@ -1,0 +1,61 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "Conversations" [level=2] [ref=e5]
+        - button "New Conversation" [ref=e6]:
+          - img [ref=e7]
+      - generic [ref=e8]:
+        - generic:
+          - paragraph [ref=e9]: Today
+          - generic [ref=e10] [cursor=pointer]:
+            - generic:
+              - paragraph: this is second messages from d...
+              - paragraph: 2 messages
+            - button [ref=e11]:
+              - img [ref=e12]
+      - generic [ref=e15]:
+        - button "Clear All History": Clear All History
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - button [ref=e21]:
+            - img [ref=e22]
+          - generic [ref=e24]:
+            - heading "Gemini Chat" [level=1] [ref=e25]
+            - paragraph [ref=e26]: this is second messages from d...
+        - generic [ref=e27]:
+          - button "Switch to Light Mode" [ref=e28]:
+            - img [ref=e29]
+          - button "Settings" [ref=e35]:
+            - img [ref=e36]
+          - button "New" [ref=e39]:
+            - img [ref=e40]
+            - text: New
+      - generic [ref=e41]:
+        - generic [ref=e43]:
+          - paragraph [ref=e44]: this is second messages from developer, show me what's your capabilities ?!
+          - paragraph [ref=e45]: 1:29:55 AM
+          - generic [ref=e46]:
+            - button "Copy" [ref=e47]:
+              - img [ref=e48]
+            - button "Delete" [ref=e51]:
+              - img [ref=e52]
+        - generic [ref=e56]:
+          - paragraph [ref=e57]: "Hello again, developer! I'm happy to give you a rundown of what I can do. Think of me as a versatile digital assistant with a broad range of capabilities, primarily focused on understanding and generating human-like text. Here's a breakdown of my core capabilities: 1. **Text Generation & Writing:** * **Drafting Content:** Emails, reports, articles, blog posts, marketing copy, social media updates, creative stories, poems, scripts. * **Summarization:** Condensing long documents, articles, or conversations into concise summaries. * **Rewriting & Paraphrasing:** Rephrasing text to change tone, style, or simplify complexity. * **Expanding Text:** Taking a short prompt or idea and developing it into a longer piece. * **Brainstorming:** Generating ideas for names, topics, solutions, or creative projects. 2. **Information & Knowledge:** * **Answering Questions:** Providing information on a vast array of topics across science, history, technology, culture, and more (based on my training data). * **Explaining Complex Concepts:** Breaking down difficult subjects into easy-to-understand explanations. * **Factual Retrieval:** Accessing and presenting factual information from my knowledge base. * **Research Assistance:** Helping to outline research topics, identify key points, or suggest angles. 3. **Language & Communication:** * **Translation:** Translating text between various languages. * **Grammar & Spell Checking:** Identifying and correcting errors in written text. * **Tone Adjustment:** Modifying text to be more formal, casual, persuasive, empathetic, etc. * **Dialogue & Conversation:** Engaging in natural, coherent conversations, answering follow-up questions, and maintaining context. 4. **Problem Solving & Logic:** * **Step-by-Step Instructions:** Generating guides or procedures for tasks. * **Debugging (Conceptual):** Helping to identify potential issues in code, logic, or plans (though I don't execute code). * **Logical Reasoning:** Applying patterns and rules to solve puzzles or complete sequences. * **Decision Support:** Presenting pros and cons, or different perspectives on a problem. 5. **Code & Technical Assistance (Especially relevant for a developer!):** * **Code Generation:** Writing code snippets or simple programs in various languages (Python, JavaScript, C++, Java, etc.). * **Code Explanation:** Explaining what a piece of code does, line by line or overall. * **Code Debugging Suggestions:** Helping identify common errors, suggesting fixes, or improving efficiency. * **API Usage Examples:** Providing examples of how to use specific APIs or libraries. * **Technical Documentation:** Drafting documentation, explanations of algorithms, or system architectures. * **Regular Expression Generation:** Creating or explaining regex patterns. **In essence, my goal is to assist you by understanding your prompts and generating relevant, useful, and contextually appropriate text, whether it's for creative tasks, information retrieval, language processing, or technical support.** How can I help you get started or what specific tasks do you have in mind?"
+          - paragraph [ref=e58]: 1:30:07 AM
+          - generic [ref=e59]:
+            - button "Copy" [ref=e60]:
+              - img [ref=e61]
+            - button "Regenerate" [ref=e64]:
+              - img [ref=e65]
+            - button "Delete" [ref=e70]:
+              - img [ref=e71]
+      - generic [ref=e75]:
+        - textbox "Type your message..." [ref=e76]
+        - button "Send" [disabled] [ref=e77]:
+          - img [ref=e78]
+          - text: Send
+  - button "Open Next.js Dev Tools" [ref=e86] [cursor=pointer]:
+    - img [ref=e87]
+  - alert [ref=e90]

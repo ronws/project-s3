@@ -1,0 +1,67 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "Conversations" [level=2] [ref=e5]
+        - button "New Conversation" [ref=e6]:
+          - img [ref=e7]
+      - generic [ref=e8]:
+        - generic:
+          - paragraph [ref=e9]: Today
+          - generic [ref=e10] [cursor=pointer]:
+            - generic:
+              - paragraph: this is third messages from de...
+              - paragraph: 2 messages
+            - button [ref=e11]:
+              - img [ref=e12]
+          - generic [ref=e15] [cursor=pointer]:
+            - generic:
+              - paragraph: this is second messages from d...
+              - paragraph: 2 messages
+            - button [ref=e16]:
+              - img [ref=e17]
+      - generic [ref=e20]:
+        - button "Clear All History": Clear All History
+    - generic [ref=e23]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - button [ref=e26]:
+            - img [ref=e27]
+          - generic [ref=e29]:
+            - heading "Gemini Chat" [level=1] [ref=e30]
+            - paragraph [ref=e31]: this is third messages from de...
+        - generic [ref=e32]:
+          - button "Switch to Light Mode" [ref=e33]:
+            - img [ref=e34]
+          - button "Settings" [ref=e40]:
+            - img [ref=e41]
+          - button "New" [ref=e44]:
+            - img [ref=e45]
+            - text: New
+      - generic [ref=e46]:
+        - generic [ref=e48]:
+          - paragraph [ref=e49]: this is third messages from developer, show me how to calculate token input and output !
+          - paragraph [ref=e50]: 1:43:26 AM
+          - generic [ref=e51]:
+            - button "Copy" [ref=e52]:
+              - img [ref=e53]
+            - button "Delete" [ref=e56]:
+              - img [ref=e57]
+        - generic [ref=e61]:
+          - paragraph [ref=e62]: "Hello again! Glad to help you with the crucial aspect of token calculation. Understanding how tokens are counted for both input and output is fundamental for managing costs, staying within context window limits, and optimizing your LLM applications. Let's break down tokens, why they matter, and how to calculate them. --- ### What are Tokens? Tokens are the fundamental units that Large Language Models (LLMs) process. They are not simply characters or words, but rather **sub-word units**. * **Example:** * \"hello\" might be one token. * \"world\" might be one token. * \"understanding\" might be one token. * \"un-der-stand-ing\" could be tokenized into multiple sub-words. * A single Chinese character might be multiple tokens. * Spaces and punctuation usually count as separate tokens or parts of tokens. **Rough estimate for English:** 1 token is approximately 4 characters or ¾ of a word. ### Why Do Tokens Matter? 1. **Cost:** You are billed based on the number of tokens processed (input) and generated (output). Input and output tokens are often priced differently. 2. **Context Window Limits:** LLMs have a maximum context window (e.g., 4k, 8k, 16k, 128k tokens). This is the total number of tokens the model can \"see\" at any given time, including your prompt, system messages, conversation history, function definitions, and the model's response. Exceeding this limit will result in an error. 3. **Performance:** Longer inputs and outputs can lead to slower response times. --- ### How to Calculate Tokens There are two primary ways to calculate tokens, each with its own purpose: #### 1. Using the API Response (Most Accurate for Billing) When you make an API call to an LLM provider (like OpenAI, Anthropic, Google Gemini), their API response typically includes the token usage directly. This is the **most accurate method** as it reflects exactly what you'll be billed for. **Example (OpenAI Python API):** ```python import openai # Assuming you have your OpenAI API key set up as an environment variable # or passed directly # openai.api_key = \"YOUR_OPENAI_API_KEY\" def get_token_usage(prompt_messages, model=\"gpt-3.5-turbo\"): try: response = openai.chat.completions.create( model=model, messages=prompt_messages, max_tokens=500 # Limit the model's output to prevent excessive costs for this example ) # Accessing the token usage information prompt_tokens = response.usage.prompt_tokens completion_tokens = response.usage.completion_tokens total_tokens = response.usage.total_tokens print(f\"--- Token Usage Report for {model} ---\") print(f\"Input (Prompt) Tokens: {prompt_tokens}\") print(f\"Output (Completion) Tokens: {completion_tokens}\") print(f\"Total Tokens: {total_tokens}\") print(\"-----------------------------------\") print(\"\\nModel's response:\") print(response.choices[0].message.content) return response except openai.APIError as e: print(f\"OpenAI API Error: {e}\") return None # --- Example Usage --- if __name__ == \"__main__\": messages = [ {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"}, {\"role\": \"user\", \"content\": \"Tell me a short story about a brave knight and a wise dragon.\"}, ] print(\"Calculating tokens after API call...\") api_response = get_token_usage(messages) if api_response: print(\"\\n--- Another example with more text ---\") longer_messages = [ {\"role\": \"system\", \"content\": \"You are a creative writer.\"}, {\"role\": \"user\", \"content\": ( \"Write a detailed summary of the plot of 'Moby Dick', focusing on Captain Ahab's obsession \" \"and the whale itself. Make sure to include the tragic ending.\" )}, ] get_token_usage(longer_messages, model=\"gpt-4o-mini\") # Using a different model for variety ``` **Output Explanation:** * `prompt_tokens`: The number of tokens in your `messages` (input). This includes system messages, user messages, and any previous assistant messages if you're maintaining a conversation history. * `completion_tokens`: The number of tokens generated by the LLM in its response (output). * `total_tokens`: `prompt_tokens` + `completion_tokens`. #### 2. Using Client-Side Tokenizers (For Estimation & Pre-flight Checks) You might want to calculate tokens *before* sending them to the API. This is useful for: * Checking if your prompt will fit within the context window. * Estimating costs before making a request. * Providing real-time feedback in a UI (e.g., \"X tokens remaining\"). **A. For OpenAI Models: Use `tiktoken`** OpenAI provides an open-source library called `tiktoken` that matches their models' tokenization logic. ```python import tiktoken def num_tokens_from_messages(messages, model=\"gpt-3.5-turbo-0613\"): \"\"\"Return the number of tokens used by a list of messages.\"\"\" try: encoding = tiktoken.encoding_for_model(model) except KeyError: # Fallback for models not directly in tiktoken's registry, # usually defaults to a common encoding like cl100k_base print(\"Warning: model not found. Using cl100k_base encoding.\") encoding = tiktoken.get_encoding(\"cl100k_base\") if model in { \"gpt-3.5-turbo-0613\", \"gpt-3.5-turbo-16k-0613\", \"gpt-4-0613\", \"gpt-4-32k-0613\", \"gpt-4o\", \"gpt-4o-mini\", }: tokens_per_message = 3 tokens_per_name = 1 elif model == \"gpt-3.5-turbo\": print(\"Warning: gpt-3.5-turbo may change over time. \" \"Returning num tokens assuming gpt-3.5-turbo-0613.\") return num_tokens_from_messages(messages, model=\"gpt-3.5-turbo-0613\") elif model == \"gpt-4\": print(\"Warning: gpt-4 may change over time. \" \"Returning num tokens assuming gpt-4-0613.\") return num_tokens_from_messages(messages, model=\"gpt-4-0613\") else: raise NotImplementedError( f\"\"\"num_tokens_from_messages() is not implemented for model {model}. \"\"\" \"\"\"See https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb\"\"\" ) num_tokens = 0 for message in messages: num_tokens += tokens_per_message for key, value in message.items(): num_tokens += len(encoding.encode(value)) if key == \"name\": num_tokens += tokens_per_name num_tokens += 3 # every reply is primed with <|start|>assistant<|message|> return num_tokens def num_tokens_from_string(string: str, model_name: str) -> int: \"\"\"Returns the number of tokens in a text string for a given model.\"\"\" encoding = tiktoken.encoding_for_model(model_name) return len(encoding.encode(string)) # --- Example Usage --- if __name__ == \"__main__\": messages = [ {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"}, {\"role\": \"user\", \"content\": \"Tell me a short story about a brave knight and a wise dragon.\"}, ] prompt_tokens_estimate = num_tokens_from_messages(messages, model=\"gpt-3.5-turbo\") print(f\"Estimated Input (Prompt) Tokens (using tiktoken): {prompt_tokens_estimate}\") text_to_estimate = \"This is a sentence to estimate its token count.\" string_tokens_estimate = num_tokens_from_string(text_to_estimate, \"gpt-3.5-turbo\") print(f\"Estimated tokens for a string '{text_to_estimate}': {string_tokens_estimate}\") # Note: `tiktoken` does not estimate completion tokens as it doesn't know what the model will generate. ``` *Self-correction for `tiktoken`:* The `num_tokens_from_messages` function from the OpenAI cookbook includes some overhead for message structure (tokens_per_message, tokens_per_name, and the final +3). This makes the client-side estimation quite close to what the API reports for prompt tokens, but it's still an estimate. **B. For Other Models (e.g., Anthropic, Google, Hugging Face):** * **Anthropic:** They also provide a client-side tokenizer in their SDK: `anthropic.get_tokenizer().count_tokens(text)`. * **Google Gemini:** Their SDKs also often include helper functions to count tokens, like `model.count_tokens(prompt)`. * **Hugging Face `transformers` library:** For many open-source models, you can load the specific model's tokenizer: ```python from transformers import AutoTokenizer tokenizer = AutoTokenizer.from_pretrained(\"bert-base-uncased\") text = \"This is an example sentence.\" tokens = tokenizer.encode(text, return_tensors='pt') print(len(tokens[0])) # This gives the number of tokens, including special tokens like [CLS], [SEP] ``` ### Input vs. Output Tokens Revisited * **Input Tokens (Prompt Tokens):** * Your initial prompt. * System messages. * All previous turns in a conversation history (if you're sending the full history). * Function/tool definitions. * Arguments passed to functions/tools. * Outputs from tool calls (if included in the conversation to the model). * **For vision models:** Images don't count as \"tokens\" directly, but they consume an equivalent \"token budget\" depending on their resolution and detail (e.g., in OpenAI, a low-res image is ~85 tokens, high-res can be ~1100 tokens). * **Output Tokens (Completion Tokens):** * Only the text that the model generates as its response. * Function call requests generated by the model. ### Key Takeaways * **Always trust the API's reported `usage` for billing.** * Use client-side tokenizers (`tiktoken`, `anthropic.get_tokenizer`, `transformers` tokenizers) for *estimates*, *pre-checks*, and *context window management*. * Be mindful that pricing often differs between input and output tokens, and also across different models. * Optimize your prompts and conversation history to minimize token usage where possible to save costs and stay within limits. I hope this detailed explanation helps you confidently calculate and manage your token usage! Let me know if you have any more questions."
+          - paragraph [ref=e63]: 1:43:46 AM
+          - generic [ref=e64]:
+            - button "Copy" [ref=e65]:
+              - img [ref=e66]
+            - button "Regenerate" [ref=e69]:
+              - img [ref=e70]
+            - button "Delete" [ref=e75]:
+              - img [ref=e76]
+      - generic [ref=e80]:
+        - textbox "Type your message..." [ref=e81]
+        - button "Send" [disabled] [ref=e82]:
+          - img [ref=e83]
+          - text: Send
+  - button "Open Next.js Dev Tools" [ref=e91] [cursor=pointer]:
+    - img [ref=e92]
+  - alert [ref=e95]

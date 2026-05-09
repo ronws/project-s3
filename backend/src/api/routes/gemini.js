@@ -221,6 +221,81 @@ router.post('/chat', async (req, res, next) => {
 });
 
 /**
+ * POST /gemini/stream-chat
+ * Multi-turn conversation with streaming response (SSE)
+ */
+router.post('/stream-chat', async (req, res, next) => {
+  try {
+    const { message, conversationHistory, config: reqConfig } = req.body;
+
+    if (!message || typeof message !== 'string') {
+      throw new ValidationException('Invalid request', {
+        message: 'message is required and must be a string',
+      });
+    }
+
+    const generationConfig = getGenerationConfig(req);
+
+    // Build conversation history in Gemini format
+    const history = (conversationHistory || []).map(msg => ({
+      role: msg.role || 'user',
+      parts: [{ text: msg.content }],
+    }));
+
+    // Set SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    // Use streaming API
+    const stream = await ai.models.generateContentStream({
+      model: config.geminiModel,
+      contents: [
+        ...history.map(h => ({ role: h.role, parts: h.parts })),
+        { role: 'user', parts: [{ text: message }] }
+      ],
+      config: generationConfig,
+    });
+
+    let fullText = '';
+    let promptTokens = 0;
+    let completionTokens = 0;
+
+    for await (const chunk of stream) {
+      const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      if (text) {
+        fullText += text;
+        res.write(`data: ${JSON.stringify({ text, done: false })}\n\n`);
+      }
+      
+      // Get usage metadata if available
+      if (chunk.usageMetadata) {
+        promptTokens = chunk.usageMetadata.promptTokenCount || 0;
+        completionTokens = chunk.usageMetadata.candidatesTokenCount || 0;
+      }
+    }
+
+    // Send final chunk with metadata
+    res.write(`data: ${JSON.stringify({ 
+      done: true, 
+      fullText,
+      usageMetadata: {
+        promptTokenCount: promptTokens,
+        candidatesTokenCount: completionTokens,
+        totalTokenCount: promptTokens + completionTokens
+      }
+    })}\n\n`);
+    
+    res.end();
+  } catch (err) {
+    res.write(`data: ${JSON.stringify({ error: err.message, done: true })}\n\n`);
+    res.end();
+    next(err);
+  }
+});
+
+/**
  * POST /gemini/document
  * Process document/text content
  */

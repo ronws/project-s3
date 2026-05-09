@@ -1,0 +1,35 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "Conversations" [level=2] [ref=e5]
+        - button "New Conversation" [ref=e6]:
+          - img [ref=e7]
+      - paragraph [ref=e9]: No conversations yet
+      - generic [ref=e10]:
+        - button "Clear All History": Clear All History
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - button [ref=e16]:
+            - img [ref=e17]
+          - generic [ref=e19]:
+            - heading "Gemini Chat" [level=1] [ref=e20]
+            - paragraph [ref=e21]: New conversation
+        - generic [ref=e22]:
+          - button "Settings" [ref=e23]:
+            - img [ref=e24]
+          - button "New" [ref=e27]:
+            - img [ref=e28]
+            - text: New
+      - generic [ref=e31]:
+        - heading "Start a Conversation" [level=2] [ref=e32]
+        - paragraph [ref=e33]: Type a message below to chat with Gemini
+      - generic [ref=e35]:
+        - textbox "Type your message..." [ref=e36]
+        - button "Send" [disabled] [ref=e37]:
+          - img [ref=e38]
+          - text: Send
+  - button "Open Next.js Dev Tools" [ref=e46] [cursor=pointer]:
+    - img [ref=e47]
+  - alert [ref=e50]

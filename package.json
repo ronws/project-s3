@@ -1,27 +1,52 @@
 {
   "name": "project-s3",
   "version": "1.0.0",
-  "description": "Gemini Flash API & Web UI - Full stack application with Express backend and vanilla JS frontend",
+  "description": "Gemini Flash API & Web UI - Full stack application with Express backend and Next.js frontend",
   "scripts": {
-    "dev": "concurrently -n backend,frontend -c blue.bgWhite,green.bgWhite \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev": "concurrently -n backend,next -c blue.bgWhite,green.bgWhite \"npm run dev --prefix backend\" \"next dev\"",
     "dev:backend": "cd backend && npm run dev",
+    "dev:next": "next dev",
     "dev:frontend": "cd frontend && npm run dev",
-    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
-    "clean": "rm -rf backend/node_modules frontend/node_modules backend/.env frontend/.env",
-    "install:all": "npm install && (cd backend && npm install) && (cd frontend && npm install)"
+    "build": "next build",
+    "start": "concurrently \"npm start --prefix backend\" \"next start\"",
+    "lint": "eslint",
+    "clean": "rm -rf backend/node_modules node_modules backend/.env .env.local .next",
+    "install:all": "npm install && (cd backend && npm install)"
   },
   "keywords": [
     "gemini",
     "ai",
     "express",
     "api",
-    "vanilla-js",
+    "next.js",
+    "react",
     "fullstack"
   ],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/react": "^3.0.179",
+    "ai": "^6.0.177",
+    "highlight.js": "^11.11.1",
+    "lucide-react": "^1.14.0",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
+    "zod": "^4.4.3"
+  },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "concurrently": "^8.2.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   },
   "engines": {
     "node": ">=18.0.0"
