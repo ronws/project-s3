@@ -27,6 +27,7 @@ Enhance the chat UI with robust markdown rendering, real-time streaming response
 | Markdown Rendering | ✅ react-markdown + remark-gfm + rehype-highlight |
 | Streaming | ✅ Real-time SSE from backend |
 | Backend Streaming | ✅ `/gemini/stream-chat` endpoint |
+| Error Handling | ✅ Rate limit, 500, 404, connection errors |
 
 ---
 
@@ -139,15 +140,15 @@ Enhance the chat UI with robust markdown rendering, real-time streaming response
 
 ---
 
-### Phase 6.4: Enhance Code Block UI
+### Phase 6.4: Enhance Code Block UI ✅ IMPLEMENTED
 **Goal**: Better code display with line numbers and copy all
 
 **Tasks**:
-- [ ] 6.4.1 Add line numbers to code blocks
-- [ ] 6.4.2 Add "Copy All" button for multi-line code
-- [ ] 6.4.3 Add language label badge
-- [ ] 6.4.4 Add syntax highlighting colors
-- [ ] 6.4.5 Make code blocks horizontally scrollable
+- [x] 6.4.1 Add line numbers to code blocks
+- [x] 6.4.2 Add "Copy All" button for multi-line code
+- [x] 6.4.3 Add language label badge
+- [x] 6.4.4 Add syntax highlighting colors
+- [x] 6.4.5 Make code blocks horizontally scrollable
 
 **Deliverables**:
 - Code blocks with line numbers
@@ -172,19 +173,44 @@ Enhance the chat UI with robust markdown rendering, real-time streaming response
 
 ---
 
-### Phase 6.5 (Bonus): Typing Indicator
+### Phase 6.5 (Bonus): Typing Indicator ✅ IMPLEMENTED
 **Goal**: Show when AI is "thinking" before response starts
 
 **Tasks**:
-- [ ] 6.5.1 Add typing indicator component
-- [ ] 6.5.2 Show animation during API call
-- [ ] 6.5.3 Hide indicator when response starts
+- [x] 6.5.1 Add typing indicator component
+- [x] 6.5.2 Show animation during API call
+- [x] 6.5.3 Hide indicator when response starts
 
 **Deliverables**:
 - Animated typing dots
 - Smooth transition to response
 
 **Estimated Time**: 15 min
+
+---
+
+### Phase 6.6: Error Handling ✅ IMPLEMENTED
+**Goal**: Better error messages for backend failures
+
+**Tasks**:
+- [x] 6.6.1 Backend: Add `handleGeminiError()` function to classify API errors
+- [x] 6.6.2 Detect rate limit (429), resource exhausted, quota errors
+- [x] 6.6.3 Detect internal server errors (500), service unavailable (503)
+- [x] 6.6.4 Detect not found errors (404)
+- [x] 6.6.5 Frontend: Enhanced error handling in handleSubmit and handleRegenerate
+- [x] 6.6.6 Display user-friendly error messages with toast notifications
+
+**Deliverables**:
+- User-friendly error messages for:
+  - Rate Limit: "API rate limit exceeded. Please wait a moment and try again."
+  - Server Error: "Internal server error. Please try again later."
+  - Service Unavailable: "Service is temporarily unavailable. Please try again later."
+  - Not Found: "The requested resource was not found."
+  - Connection Error: "Unable to connect to the server. Please check your connection."
+- Toast notifications for all error types
+- Error displayed in chat as assistant message
+
+**Estimated Time**: 20 min
 
 ---
 
@@ -357,9 +383,10 @@ project-s3/
 | 6.1: Dependencies | 15 min | Easy | ✅ Complete |
 | 6.2: Markdown Parser | 45 min | Medium | ✅ Complete |
 | 6.3: Streaming | 1 hour | Medium | ✅ Complete |
-| 6.4: Code UI | 30 min | Easy | ⏳ Pending |
-| 6.5: Typing Indicator | 15 min | Easy | ⏳ Bonus |
-| **Total** | **~2.5 hours** | **Medium** | **✅ Phase 6 Complete** |
+| 6.4: Code UI | 30 min | Easy | ✅ Complete |
+| 6.5: Typing Indicator | 15 min | Easy | ✅ Complete |
+| 6.6: Error Handling | 20 min | Easy | ✅ Complete |
+| **Total** | **~3 hours** | **Medium** | **✅ Phase 6 Complete** |
 
 ---
 
@@ -399,11 +426,12 @@ git reset --hard HEAD
 - [x] Approve Phase 6.1 (Dependencies)
 - [x] Approve Phase 6.2 (Markdown Parser)
 - [x] Approve Phase 6.3 (Streaming)
-- [ ] Approve Phase 6.4 (Code UI)
-- [ ] Approve Phase 6.5 (Typing Indicator - Bonus)
+- [x] Approve Phase 6.4 (Code UI)
+- [x] Approve Phase 6.5 (Typing Indicator - Bonus)
+- [x] Approve Phase 6.6 (Error Handling)
 
 ---
 
 **Proposal Date**: May 10, 2026
 **Implementation Date**: May 10, 2026
-**Status**: ✅ Phase 6.1-6.3 Complete (Backend Streaming Implemented)
+**Status**: ✅ Phase 6 Complete (All features implemented)
