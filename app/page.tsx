@@ -544,7 +544,7 @@ export default function ChatPage() {
             </div>
           ))}
 
-          {isLoading && !isStreaming && (
+          {isLoading && !streamingContent && (
             <TypingIndicator visible={true} />
           )}
 
