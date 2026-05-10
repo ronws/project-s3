@@ -20,10 +20,28 @@ const MODELS = [
   { value: 'gemini-1.5-pro', label: 'gemini-1.5-pro' },
 ];
 
+const AGENT_ROLES = [
+  { id: 'general', label: 'General Assistant', instruction: 'You are a helpful, knowledgeable, and friendly AI assistant. Provide accurate and concise responses.' },
+  { id: 'coder', label: 'Code Helper', instruction: 'You are an expert programmer. Help write clean, efficient, and well-documented code. Explain concepts clearly and provide examples.' },
+  { id: 'writer', label: 'Creative Writer', instruction: 'You are a creative writer with excellent storytelling skills. Write engaging content with proper grammar and style.' },
+  { id: 'analyst', label: 'Data Analyst', instruction: 'You are a data analyst expert. Analyze data, identify patterns, and provide insights. Use numbers and facts in your responses.' },
+  { id: 'teacher', label: 'Teacher', instruction: 'You are a patient and knowledgeable teacher. Explain complex concepts in simple terms, use examples, and encourage learning.' },
+  { id: 'researcher', label: 'Research Assistant', instruction: 'You are a research assistant. Help find information, summarize findings, and provide well-referenced responses.' },
+  { id: 'custom', label: 'Custom', instruction: '' },
+];
+
 export function SettingsPanel({ isOpen, onClose, settings, onSave, onReset }: SettingsPanelProps) {
   const [activeTab, setActiveTab] = useState<'basic' | 'advanced'>('basic');
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
   const [errors, setErrors] = useState<string[]>([]);
+
+  const getSelectedRole = () => {
+    if (!localSettings.systemInstruction) return AGENT_ROLES[6]; // custom
+    const matched = AGENT_ROLES.find(r => r.instruction === localSettings.systemInstruction);
+    return matched || AGENT_ROLES[6]; // custom if not matched
+  };
+
+  const [selectedRoleId, setSelectedRoleId] = useState(getSelectedRole().id);
 
   if (!isOpen) return null;
 
@@ -70,7 +88,16 @@ export function SettingsPanel({ isOpen, onClose, settings, onSave, onReset }: Se
 
   const handleReset = () => {
     setLocalSettings(DEFAULT_SETTINGS);
+    setSelectedRoleId('general');
     setErrors([]);
+  };
+
+  const handleRoleChange = (roleId: string) => {
+    setSelectedRoleId(roleId);
+    const role = AGENT_ROLES.find(r => r.id === roleId);
+    if (role) {
+      updateSetting('systemInstruction', role.instruction);
+    }
   };
 
   return (
@@ -174,6 +201,24 @@ export function SettingsPanel({ isOpen, onClose, settings, onSave, onReset }: Se
                 </p>
               </div>
 
+              {/* Agent Role */}
+              <div>
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Agent Role
+                </label>
+                <select
+                  value={selectedRoleId}
+                  onChange={(e) => handleRoleChange(e.target.value)}
+                  className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white"
+                >
+                  {AGENT_ROLES.map(role => (
+                    <option key={role.id} value={role.id}>
+                      {role.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* System Prompt */}
               <div>
                 <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
@@ -181,7 +226,10 @@ export function SettingsPanel({ isOpen, onClose, settings, onSave, onReset }: Se
                 </label>
                 <textarea
                   value={localSettings.systemInstruction}
-                  onChange={(e) => updateSetting('systemInstruction', e.target.value)}
+                  onChange={(e) => {
+                    updateSetting('systemInstruction', e.target.value);
+                    setSelectedRoleId('custom');
+                  }}
                   rows={4}
                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white resize-none"
                   placeholder="You are a helpful AI assistant..."

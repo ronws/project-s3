@@ -42,7 +42,7 @@ export const DEFAULT_SETTINGS: Settings = {
   model: 'gemini-2.5-flash',
   temperature: 1.0,
   maxOutputTokens: 8192,
-  systemInstruction: 'You are a helpful AI assistant.',
+  systemInstruction: 'You are a helpful, knowledgeable, and friendly AI assistant. Provide accurate and concise responses.',
   topP: 0.95,
   topK: 40,
   stopSequences: [],
