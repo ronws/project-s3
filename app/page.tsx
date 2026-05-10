@@ -72,6 +72,7 @@ export default function ChatPage() {
     const startTime = Date.now();
 
     try {
+      console.log('Fetching from:', `${apiUrl}/gemini/stream-chat`);
       const response = await fetch(`${apiUrl}/gemini/stream-chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -198,10 +199,13 @@ export default function ChatPage() {
       setStreamingContent('');
 
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      
+      console.error('Full error object:', err);
+      console.error('Error message:', errorMsg);
       
       // Determine error type and display appropriate message
-      let displayError = errorMsg;
+      let displayError = 'Error';
       let userMessage = errorMsg;
       
       const lowerError = errorMsg.toLowerCase();
@@ -217,9 +221,9 @@ export default function ChatPage() {
       } else if (lowerError.includes('404') || lowerError.includes('not found')) {
         displayError = 'Not Found';
         userMessage = 'The requested resource was not found.';
-      } else if (lowerError.includes('network') || lowerError.includes('fetch') || lowerError.includes('connection')) {
+      } else if (lowerError.includes('network') || lowerError.includes('fetch') || lowerError.includes('connection') || lowerError.includes('failed to fetch')) {
         displayError = 'Connection Error';
-        userMessage = 'Unable to connect to the server. Please check your connection.';
+        userMessage = 'Unable to connect to the server. Please check your connection and ensure the backend is running on port 4443.';
       }
       
       setError(`${displayError}: ${userMessage}`);

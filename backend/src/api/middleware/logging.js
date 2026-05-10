@@ -49,10 +49,6 @@ export function loggingMiddleware(req, res, next) {
       `[${requestId}] ${req.method} ${req.path} - Status: ${res.statusCode} - Duration: ${duration}ms`
     );
 
-    // Add response headers
-    res.setHeader('X-Request-ID', requestId);
-    res.setHeader('X-Response-Time', `${duration}ms`);
-
     return originalEnd.apply(res, args);
   };
 

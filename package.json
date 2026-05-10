@@ -3,15 +3,21 @@
   "version": "1.0.0",
   "description": "Gemini Flash API & Web UI - Full stack application with Express backend and Next.js frontend",
   "scripts": {
-    "dev": "concurrently -n backend,next -c blue.bgWhite,green.bgWhite \"npm run dev --prefix backend\" \"next dev\"",
-    "dev:backend": "cd backend && npm run dev",
+    "dev": "concurrently -n backend,next -c blue.bgWhite,green.bgWhite \"npm run dev:backend\" \"npm run dev:next\"",
+    "dev:backend": "sh -c 'cd backend && npm run dev'",
     "dev:next": "next dev",
     "dev:frontend": "cd frontend && npm run dev",
     "build": "next build",
-    "start": "concurrently \"npm start --prefix backend\" \"next start\"",
+    "start": "concurrently -n backend,next \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "sh -c 'cd backend && npm start'",
+    "start:frontend": "next start",
     "lint": "eslint",
     "clean": "rm -rf backend/node_modules node_modules backend/.env .env.local .next",
-    "install:all": "npm install && (cd backend && npm install)"
+    "install:all": "npm install && (cd backend && npm install)",
+    "test": "bun test",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:backend": "sh -c 'cd backend && npm test'"
   },
   "keywords": [
     "gemini",
@@ -38,6 +44,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
