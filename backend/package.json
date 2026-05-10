@@ -17,7 +17,7 @@
     "rest-api",
     "ai"
   ],
-  "author": "",
+  "author": "ronws",
   "license": "ISC",
   "dependencies": {
     "@google/genai": "^1.52.0",

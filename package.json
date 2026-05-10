@@ -28,7 +28,7 @@
     "react",
     "fullstack"
   ],
-  "author": "",
+  "author": "ronws",
   "license": "ISC",
   "dependencies": {
     "@ai-sdk/react": "^3.0.179",
