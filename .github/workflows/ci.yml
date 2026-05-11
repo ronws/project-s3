@@ -37,8 +37,15 @@ jobs:
       - name: Start backend server
         run: |
           cd backend
-          npm run dev &
-          sleep 5
+          npm run dev > /dev/null 2>& &
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:4443/health > /dev/null 2>&1; then
+              echo "Server is ready!"
+              break
+            fi
+            sleep 1
+          done
 
       - name: Run tests
         run: npm run test
