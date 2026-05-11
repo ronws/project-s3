@@ -3,6 +3,7 @@
  * Tests for Gemini API routes - validation and error handling
  */
 
+import './setup.js';
 import { describe, it, expect } from 'bun:test';
 
 const BASE_URL = 'http://localhost:4443';

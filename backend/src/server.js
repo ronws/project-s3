@@ -9,7 +9,7 @@ import { config, validateConfig } from './config/core.js';
 /**
  * Start the server
  */
-async function main() {
+export async function main() {
   try {
     // Validate configuration
     console.log(`Starting gemini-flash-api in ${config.nodeEnv} environment...`);
@@ -43,10 +43,15 @@ async function main() {
 
     process.on('SIGTERM', gracefulShutdown);
     process.on('SIGINT', gracefulShutdown);
+
+    return server;
   } catch (err) {
     console.error('✗ Failed to start server:', err.message);
     process.exit(1);
   }
 }
 
-main();
+// Only run main() if this file is executed directly (not imported for tests)
+if (process.env.RUN_SERVER !== 'false') {
+  main();
+}
