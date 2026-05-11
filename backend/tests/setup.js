@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.resolve(__dirname, '../.env');
 
-// Load .env file manually and set env vars
+// Load .env file manually and set env vars (only if not already set)
 if (fs.existsSync(envPath)) {
   const envContent = fs.readFileSync(envPath, 'utf-8');
   envContent.split('\n').forEach(line => {
@@ -19,7 +19,10 @@ if (fs.existsSync(envPath)) {
     if (trimmed && !trimmed.startsWith('#')) {
       const [key, ...valueParts] = trimmed.split('=');
       if (key && valueParts.length > 0) {
-        process.env[key.trim()] = valueParts.join('=').trim();
+        const envKey = key.trim();
+        if (!process.env[envKey]) {
+          process.env[envKey] = valueParts.join('=').trim();
+        }
       }
     }
   });
