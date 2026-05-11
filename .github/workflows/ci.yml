@@ -9,6 +9,8 @@ on:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
     steps:
       - name: Checkout code
@@ -49,8 +51,6 @@ jobs:
 
       - name: Run tests
         run: npm run test
-        env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
       - name: Run E2E tests
         run: npm run test:e2e
