@@ -52,7 +52,7 @@ export function SettingsPanel({ isOpen, onClose, settings, onSave, onReset }: Se
 
   const validateSettings = (): boolean => {
     const newErrors: string[] = [];
-    
+
     if (localSettings.temperature < 0 || localSettings.temperature > 2) {
       newErrors.push('Temperature must be between 0 and 2');
     }

@@ -110,8 +110,8 @@ export function useConversations() {
   const addMessage = useCallback((message: Message, metadata?: ResponseMetadata) => {
     if (!currentConversationId) {
       const newId = createConversation();
-      setConversations(prev => prev.map(c => 
-        c.id === newId 
+      setConversations(prev => prev.map(c =>
+        c.id === newId
           ? { ...c, messages: [message], metadata: metadata ? [metadata] : [], updatedAt: new Date().toISOString() }
           : c
       ));

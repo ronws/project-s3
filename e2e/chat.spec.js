@@ -41,7 +41,7 @@ test.describe('Gemini Chat UI E2E Tests', () => {
   test('should show streaming response with token stats', async ({ page }) => {
     // Start fresh conversation
     await page.locator('button:has-text("New")').click();
-    
+
     const input = page.locator('input[placeholder*="Type your message"]');
     const sendButton = page.locator('button:has-text("Send")');
 
@@ -69,7 +69,7 @@ test.describe('Gemini Chat UI E2E Tests', () => {
 
   test('should toggle dark/light mode', async ({ page }) => {
     const themeButton = page.locator('button:has-text("Switch to Light Mode"), button:has-text("Switch to Dark Mode")');
-    
+
     if (await themeButton.isVisible()) {
       await themeButton.click();
       await page.waitForTimeout(500);
@@ -78,7 +78,7 @@ test.describe('Gemini Chat UI E2E Tests', () => {
 
   test('should show error for empty input', async ({ page }) => {
     const sendButton = page.locator('button:has-text("Send")');
-    
+
     const input = page.locator('input[placeholder*="Type your message"]');
     const isDisabled = await input.isDisabled() || await sendButton.isDisabled();
     expect(isDisabled).toBe(true);

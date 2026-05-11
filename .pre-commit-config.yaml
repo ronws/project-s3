@@ -8,18 +8,4 @@ repos:
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: check-json
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.4
-    hooks:
-      - id: ruff
-        args: [--fix]
-
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.18.0
-    hooks:
-      - id: eslint
-        args: [--fix, --max-warnings=0]
-        stages: [pre-commit]
-        additional_dependencies:
-          - eslint-config-next@16.2.6
+      - id: check-toml

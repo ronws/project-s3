@@ -37,8 +37,8 @@ export const config = {
     topP: parseFloat(process.env.GEMINI_TOP_P || '0.95'),
     topK: parseInt(process.env.GEMINI_TOP_K || '40', 10),
     candidateCount: parseInt(process.env.GEMINI_CANDIDATE_COUNT || '1', 10),
-    stopSequences: process.env.GEMINI_STOP_SEQUENCES 
-      ? JSON.parse(process.env.GEMINI_STOP_SEQUENCES) 
+    stopSequences: process.env.GEMINI_STOP_SEQUENCES
+      ? JSON.parse(process.env.GEMINI_STOP_SEQUENCES)
       : undefined,
     responseMimeType: process.env.GEMINI_RESPONSE_MIME_TYPE || 'text/plain',
     systemInstruction: process.env.GEMINI_SYSTEM_INSTRUCTION || undefined,

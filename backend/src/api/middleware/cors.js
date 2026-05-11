@@ -31,11 +31,11 @@ export function corsMiddleware(allowedOrigins = ['*']) {
       // Origin not allowed
       return callback(new Error(`CORS: Origin ${origin} not allowed`), false);
     },
-    
+
     credentials: true, // Allow cookies/auth headers
-    
+
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    
+
     allowedHeaders: [
       'Origin',
       'X-Requested-With',
@@ -44,12 +44,12 @@ export function corsMiddleware(allowedOrigins = ['*']) {
       'Authorization',
       'X-Request-ID',
     ],
-    
+
     exposedHeaders: [
       'X-Request-ID',
       'X-Response-Time',
     ],
-    
+
     maxAge: 86400, // 24 hours for preflight cache
   };
 

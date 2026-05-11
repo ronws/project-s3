@@ -105,7 +105,7 @@ const ai = new GoogleGenAI({ apiKey: config.geminiApiKey });
  */
 function getGenerationConfig(req) {
   const bodyConfig = req.body.config || {};
-  
+
   // Start with defaults from core config
   const generationConfig = {
     temperature: config.generation.temperature,
@@ -348,7 +348,7 @@ router.post('/stream-chat', async (req, res, next) => {
         fullText += text;
         res.write(`data: ${JSON.stringify({ text, done: false })}\n\n`);
       }
-      
+
       // Get usage metadata if available
       if (chunk.usageMetadata) {
         promptTokens = chunk.usageMetadata.promptTokenCount || 0;
@@ -357,8 +357,8 @@ router.post('/stream-chat', async (req, res, next) => {
     }
 
     // Send final chunk with metadata
-    res.write(`data: ${JSON.stringify({ 
-      done: true, 
+    res.write(`data: ${JSON.stringify({
+      done: true,
       fullText,
       usageMetadata: {
         promptTokenCount: promptTokens,
@@ -366,15 +366,15 @@ router.post('/stream-chat', async (req, res, next) => {
         totalTokenCount: promptTokens + completionTokens
       }
     })}\n\n`);
-    
+
     res.end();
   } catch (err) {
     const parsedError = handleGeminiError(err);
-    res.write(`data: ${JSON.stringify({ 
-      error: parsedError.message, 
+    res.write(`data: ${JSON.stringify({
+      error: parsedError.message,
       errorCode: parsedError.errorCode,
       statusCode: parsedError.statusCode,
-      done: true 
+      done: true
     })}\n\n`);
     res.end();
     // Don't call next() here since we've already sent the response

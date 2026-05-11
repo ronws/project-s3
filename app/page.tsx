@@ -56,12 +56,12 @@ export default function ChatPage() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { 
-      role: 'user', 
+    const userMessage: Message = {
+      role: 'user',
       content: input,
       timestamp: new Date().toISOString(),
     };
-    
+
     addMessage(userMessage);
     setInput('');
     setError('');
@@ -95,7 +95,7 @@ export default function ChatPage() {
         const status = response.status;
         let errorMsg = '';
         let errorCode = '';
-        
+
         if (status === 429) {
           errorMsg = 'Rate limit exceeded. Please wait a moment and try again.';
           errorCode = 'RATE_LIMIT_EXCEEDED';
@@ -125,15 +125,15 @@ export default function ChatPage() {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          
+
           const chunk = decoder.decode(value);
           const lines = chunk.split('\n');
-          
+
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               try {
                 const data = JSON.parse(line.slice(6));
-                
+
                 if (data.error) {
                   streamError = {
                     message: data.error,
@@ -142,12 +142,12 @@ export default function ChatPage() {
                   };
                   break;
                 }
-                
+
                 if (data.text) {
                   fullText += data.text;
                   setStreamingContent(fullText);
                 }
-                
+
                 if (data.done && data.usageMetadata) {
                   usageMetadata = data.usageMetadata;
                 }
@@ -163,7 +163,7 @@ export default function ChatPage() {
       // Handle streaming errors
       if (streamError) {
         let errorDisplay = streamError.message;
-        
+
         if (streamError.errorCode === 'RATE_LIMIT_EXCEEDED' || streamError.statusCode === 429) {
           errorDisplay = 'Rate limit exceeded. Please wait a moment and try again.';
         } else if (streamError.errorCode === 'SERVICE_UNAVAILABLE' || streamError.statusCode === 503) {
@@ -173,12 +173,12 @@ export default function ChatPage() {
         } else if (streamError.errorCode === 'INTERNAL_SERVER_ERROR' || streamError.statusCode === 500) {
           errorDisplay = 'Internal server error. Please try again later.';
         }
-        
+
         throw new Error(errorDisplay);
       }
 
       const responseTime = Date.now() - startTime;
-      
+
       const metadata: ResponseMetadata = {
         promptTokenCount: usageMetadata?.promptTokenCount,
         candidatesTokenCount: usageMetadata?.candidatesTokenCount,
@@ -200,14 +200,14 @@ export default function ChatPage() {
 
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
-      
+
       console.error('Full error object:', err);
       console.error('Error message:', errorMsg);
-      
+
       // Determine error type and display appropriate message
       let displayError = 'Error';
       let userMessage = errorMsg;
-      
+
       const lowerError = errorMsg.toLowerCase();
       if (lowerError.includes('rate limit') || lowerError.includes('429') || lowerError.includes('resource exhausted') || lowerError.includes('quota')) {
         displayError = 'Rate Limit Error';
@@ -225,7 +225,7 @@ export default function ChatPage() {
         displayError = 'Connection Error';
         userMessage = 'Unable to connect to the server. Please check your connection and ensure the backend is running on port 4443.';
       }
-      
+
       setError(`${displayError}: ${userMessage}`);
       console.error('Chat error:', err);
       setIsStreaming(false);
@@ -256,7 +256,7 @@ export default function ChatPage() {
     if (!lastUserMessage || isLoading) return;
 
     const conversationHistory = getMessagesForRegenerate();
-    
+
     const lastAssistantIdx = messages.map(m => m.role).lastIndexOf('assistant');
     if (lastAssistantIdx >= 0) {
       deleteMessage(lastAssistantIdx);
@@ -287,7 +287,7 @@ export default function ChatPage() {
       if (!response.ok) {
         const status = response.status;
         let errorMsg = '';
-        
+
         if (status === 429) {
           errorMsg = 'Rate limit exceeded. Please wait and try again.';
         } else if (status === 500 || status === 503) {
@@ -302,7 +302,7 @@ export default function ChatPage() {
 
       const data = await response.json();
       const responseTime = Date.now() - startTime;
-      
+
       const metadata: ResponseMetadata = {
         promptTokenCount: data.usageMetadata?.promptTokenCount,
         candidatesTokenCount: data.usageMetadata?.candidatesTokenCount,
@@ -322,7 +322,7 @@ export default function ChatPage() {
       showToast('Response regenerated', 'success');
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      
+
       // Determine error type
       let displayMsg = errorMsg;
       const lowerError = errorMsg.toLowerCase();
@@ -335,7 +335,7 @@ export default function ChatPage() {
       } else if (lowerError.includes('network') || lowerError.includes('connection')) {
         displayMsg = 'Connection error. Please check your network.';
       }
-      
+
       showToast(displayMsg, 'error');
     } finally {
       setIsLoading(false);
@@ -346,7 +346,7 @@ export default function ChatPage() {
     const date = new Date(dateStr);
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Yesterday';
     if (diffDays < 7) return `${diffDays} days ago`;
@@ -517,7 +517,7 @@ export default function ChatPage() {
                     {new Date(message.timestamp).toLocaleTimeString()}
                   </p>
                 )}
-                
+
                 {/* Action Buttons */}
                 <div className={`absolute ${message.role === 'user' ? '-left-12 top-0' : '-right-12 top-0'} flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity`}>
                   <button

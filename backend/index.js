@@ -3,7 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import { GoogleGenAI } from '@google/genai';
 
-const app = express(); 
+const app = express();
 const upload = multer();
 const ai = new GoogleGenAI({apiKey: process.env.GOOGLE_API_KEY});
 
@@ -78,7 +78,7 @@ app.post('/generate-from-document', upload.single('document'), async (req, res) 
             model: GEMINI_MODEL,
             contents
         })
-        
+
         res.status(200).json({ result: response.text })
     } catch (e) {
         console.log(e);
@@ -94,15 +94,15 @@ app.post('/generate-from-audio', upload.single('audio'), async (req, res) => {
         const response = await ai.models.generateContent({
             model: GEMINI_MODEL,
             contents: [
-                { 
-                    text: prompt ?? "Tolong buatkan transkrip dari audio berikut", 
-                    type: "text" 
+                {
+                    text: prompt ?? "Tolong buatkan transkrip dari audio berikut",
+                    type: "text"
                 },
-                { 
-                    inlineData: { 
-                        data: base64Audio, 
-                        mimeType: req.file.mimetype 
-                    } 
+                {
+                    inlineData: {
+                        data: base64Audio,
+                        mimeType: req.file.mimetype
+                    }
                 }
             ]
         })
