@@ -6,24 +6,20 @@ type Theme = 'light' | 'dark';
 
 const THEME_KEY = 'project-s3:theme';
 
-export function useTheme() {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [isLoaded, setIsLoaded] = useState(false);
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return 'dark';
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  } catch {
+    return 'dark';
+  }
+}
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(THEME_KEY);
-      if (stored === 'light' || stored === 'dark') {
-        setTheme(stored);
-      } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setTheme(prefersDark ? 'dark' : 'light');
-      }
-    } catch (err) {
-      console.error('Failed to load theme:', err);
-    }
-    setIsLoaded(true);
-  }, []);
+export function useTheme() {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [isLoaded] = useState(true);
 
   useEffect(() => {
     if (!isLoaded) return;

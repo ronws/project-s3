@@ -121,7 +121,7 @@ export function getStorageSize(): string {
 
   try {
     let size = 0;
-    for (let key in localStorage) {
+    for (const key in localStorage) {
       if (key.startsWith(STORAGE_PREFIX)) {
         size += localStorage.getItem(key)?.length || 0;
       }

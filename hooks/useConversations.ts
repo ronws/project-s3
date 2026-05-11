@@ -21,37 +21,22 @@ function getInitialTitle(messages: Message[]): string {
   return 'New Conversation';
 }
 
+function loadFromStorage<T>(key: string, defaultValue: T): T {
+  if (typeof window === 'undefined') return defaultValue;
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+}
+
 export function useConversations() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
-  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [conversations, setConversations] = useState<Conversation[]>(() => loadFromStorage(STORAGE_KEY, []));
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(() => loadFromStorage(CURRENT_ID_KEY, null));
+  const [settings, setSettings] = useState<Settings>(() => loadFromStorage(SETTINGS_KEY, DEFAULT_SETTINGS));
   const [lastResponseMetadata, setLastResponseMetadata] = useState<ResponseMetadata | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setConversations(parsed);
-      }
-
-      const storedCurrentId = localStorage.getItem(CURRENT_ID_KEY);
-      if (storedCurrentId) {
-        setCurrentConversationId(storedCurrentId);
-      } else if (conversations.length > 0) {
-        setCurrentConversationId(conversations[0].id);
-      }
-
-      const storedSettings = localStorage.getItem(SETTINGS_KEY);
-      if (storedSettings) {
-        setSettings(JSON.parse(storedSettings));
-      }
-    } catch (err) {
-      console.error('Failed to load from localStorage:', err);
-    }
-    setIsLoaded(true);
-  }, []);
+  const [isLoaded, setIsLoaded] = useState(true);
 
   useEffect(() => {
     if (isLoaded && typeof window !== 'undefined') {
