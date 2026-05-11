@@ -4,9 +4,13 @@
  */
 
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Load .env file
-dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load .env file from the same directory as this file
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 /**
  * Configuration object with environment variables and defaults
